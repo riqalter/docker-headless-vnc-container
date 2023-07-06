@@ -1,5 +1,3 @@
-# This Dockerfile is used to build an headles vnc image based on Debian
-
 FROM debian:11
 
 MAINTAINER Sven Nierlein "sven@consol.de"
@@ -54,6 +52,15 @@ RUN $INST_SCRIPTS/chrome.sh
 ### Install xfce UI
 RUN $INST_SCRIPTS/xfce_ui.sh
 ADD ./src/common/xfce/ $HOME/
+
+### Install sudo
+RUN apt-get update && apt-get install -y sudo
+
+### Create headless user and grant sudo permissions
+RUN useradd -m -s /bin/bash headless && \
+    echo 'headless:hamdeh' | chpasswd && \
+    usermod -aG sudo headless && \
+    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 ### configure startup
 RUN $INST_SCRIPTS/libnss_wrapper.sh

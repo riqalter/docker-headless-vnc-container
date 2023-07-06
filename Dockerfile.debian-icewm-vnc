@@ -55,6 +55,15 @@ RUN $INST_SCRIPTS/chrome.sh
 RUN $INST_SCRIPTS/icewm_ui.sh
 ADD ./src/debian/icewm/ $HOME/
 
+### Install sudo
+RUN apt-get update && apt-get install -y sudo
+
+### Create headless user and grant sudo permissions
+RUN useradd -m -s /bin/bash headless && \
+    echo 'headless:hamdeh' | chpasswd && \
+    usermod -aG sudo headless && \
+    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
 ### configure startup
 RUN $INST_SCRIPTS/libnss_wrapper.sh
 ADD ./src/common/scripts $STARTUPDIR
