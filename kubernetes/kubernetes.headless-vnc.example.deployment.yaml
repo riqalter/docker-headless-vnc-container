@@ -16,7 +16,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: headless-vnc
-        image: consol/rocky-xfce-vnc
+        image: ghcr.io/riqalter/docker-headless-vnc-container/debian-xfce-vnc:nightly
         imagePullPolicy: Always
         args:
           ### make normal UI startup to connect via: oc rsh <pod-name> bash

@@ -16,10 +16,8 @@ Each Docker image is installed with the following components:
 ## Build Status
 [![Build Status MASTER](https://github.com/ConSol/docker-headless-vnc-container/actions/workflows/nightly.yml/badge.svg)](https://github.com/ConSol/docker-headless-vnc-container/actions/workflows/nightly.yml)
 
-## Current provided OS & UI sessions:
-* `consol/rocky-xfce-vnc`: __Rocky 9 with `Xfce4` UI session__
+## Current provided OS & UI sessions (On My Fork Only):
 * `consol/debian-xfce-vnc`: __Debian 11 with `Xfce4` UI session__
-* `consol/rocky-icewm-vnc`: __Rocky 9 with `IceWM` UI session__
 * `consol/debian-icewm-vnc`: __Debian 11 with `IceWM` UI session__
 
 ## OpenShift / Kubernetes
@@ -30,27 +28,27 @@ It's also possible to run the images in container orchestration platforms like [
 * [OpenShift usage of "headless" VNC Docker images](./openshift/README.md)
 
 ## Usage
-Usage is **similar** for all provided images, e.g. for `consol/rocky-xfce-vnc`:
+Usage is **similar** for all provided images, e.g. for `debian-xfce-vnc`:
 
 - Print out help page:
 
-      docker run consol/rocky-xfce-vnc --help
+      docker run ghcr.io/riqalter/docker-headless-vnc-container/debian-xfce-vnc:nightly --help
 
 - Run command with mapping to local port `5901` (vnc protocol) and `6901` (vnc web access):
 
-      docker run -d -p 5901:5901 -p 6901:6901 consol/rocky-xfce-vnc
+      docker run -d -p 5901:5901 -p 6901:6901 ghcr.io/riqalter/docker-headless-vnc-container/debian-xfce-vnc:nightly
 
 - Change the default user and group within a container to your own with adding `--user $(id -u):$(id -g)`:
 
-      docker run -d -p 5901:5901 -p 6901:6901 --user $(id -u):$(id -g) consol/rocky-xfce-vnc
+      docker run -d -p 5901:5901 -p 6901:6901 --user $(id -u):$(id -g) ghcr.io/riqalter/docker-headless-vnc-container/debian-xfce-vnc:nightly
 
 - If you want to get into the container use interactive mode `-it` and `bash`
 
-      docker run -it -p 5901:5901 -p 6901:6901 consol/rocky-xfce-vnc bash
+      docker run -it -p 5901:5901 -p 6901:6901 ghcr.io/riqalter/docker-headless-vnc-container/debian-xfce-vnc:nightly bash
 
 - Build an image from scratch:
 
-      docker build -t consol/rocky-xfce-vnc rocky-xfce-vnc
+      docker build -t whateveryouwant -f Dockerfile.debian-xfce-vnc .
 
 # Connect & Control
 If the container is started like mentioned above, connect via one of these options:
@@ -67,7 +65,8 @@ Since version `1.1.0` all images run as non-root user per default, so if you wan
 
 ```bash
 ## Custom Dockerfile
-FROM consol/rocky-xfce-vnc
+FROM ghcr.io/riqalter/docker-headless-vnc-container/debian-xfce-vnc:nightly
+
 ENV REFRESHED_AT 2022-10-12
 
 # Switch to root user to install additional software
@@ -88,17 +87,17 @@ Per default, since version `1.3.0` all container processes will be executed with
 #### 2.1) Using root (user id `0`)
 Add the `--user` flag to your docker run command:
 
-    docker run -it --user 0 -p 6911:6901 consol/rocky-xfce-vnc
+    docker run -it --user 0 -p 6911:6901 ghcr.io/riqalter/docker-headless-vnc-container/debian-xfce-vnc:nightly
 
 #### 2.2) Using user and group id of host system
 Add the `--user` flag to your docker run command:
 
-    docker run -it -p 6911:6901 --user $(id -u):$(id -g) consol/rocky-xfce-vnc
+    docker run -it -p 6911:6901 --user $(id -u):$(id -g) ghcr.io/riqalter/docker-headless-vnc-container/debian-xfce-vnc:nightly
 
 ### 3) Override VNC environment variables
 The following VNC environment variables can be overwritten at the `docker run` phase to customize your desktop environment inside the container:
 * `VNC_COL_DEPTH`, default: `24`
-* `VNC_RESOLUTION`, default: `1280x1024`
+* `VNC_RESOLUTION`, default: `1280x1024` (you can check your optimal viewport resolution here: https://vp.riqexpe.eu.org/)
 * `VNC_PW`, default: `my-pw`
 * `VNC_PASSWORDLESS`, default: `<not set>`
 
@@ -106,25 +105,24 @@ The following VNC environment variables can be overwritten at the `docker run` p
 Simply overwrite the value of the environment variable `VNC_PW`. For example in
 the docker run command:
 
-    docker run -it -p 5901:5901 -p 6901:6901 -e VNC_PW=my-pw consol/rocky-xfce-vnc
+    docker run -it -p 5901:5901 -p 6901:6901 -e VNC_PW=my-pw ghcr.io/riqalter/docker-headless-vnc-container/debian-xfce-vnc:nightly
 
 #### 3.2) Example: Override the VNC resolution
 Simply overwrite the value of the environment variable `VNC_RESOLUTION`. For example in
 the docker run command:
 
-    docker run -it -p 5901:5901 -p 6901:6901 -e VNC_RESOLUTION=800x600 consol/rocky-xfce-vnc
+    docker run -it -p 5901:5901 -p 6901:6901 -e VNC_RESOLUTION=800x600 ghcr.io/riqalter/docker-headless-vnc-container/debian-xfce-vnc:nightly
 
 #### 3.3) Example: Start passwordless
 Set `VNC_PASSWORDLESS` to `true` to disable the VNC password.
 It is highly recommended that you put some kind of authorization mechanism
 before this. For example in the docker run command:
 
-    docker run -it -p 5901:5901 -p 6901:6901 -e VNC_PASSWORDLESS=true consol/rocky-xfce-vnc
-
+    docker run -it -p 5901:5901 -p 6901:6901 -e VNC_PASSWORDLESS=true ghcr.io/riqalter/docker-headless-vnc-container/debian-xfce-vnc:nightly
 ### 4) View only VNC
 Since version `1.2.0` it's possible to prevent unwanted control via VNC. Therefore you can set the environment variable `VNC_VIEW_ONLY=true`. If set, the startup script will create a random password for the control connection and use the value of `VNC_PW` for view only connection over the VNC connection.
 
-     docker run -it -p 5901:5901 -p 6901:6901 -e VNC_VIEW_ONLY=true consol/rocky-xfce-vnc
+     docker run -it -p 5901:5901 -p 6901:6901 -e VNC_VIEW_ONLY=true ghcr.io/riqalter/docker-headless-vnc-container/debian-xfce-vnc:nightly
 
 ### 5) Known Issues
 
